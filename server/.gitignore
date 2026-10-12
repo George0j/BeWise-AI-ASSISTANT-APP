@@ -1,0 +1,14 @@
+# Environment variables (API Keys)
+.env
+.env.local
+
+# Node modules
+node_modules/
+
+# Build folders
+dist/
+build/
+
+# Logs & temp files
+*.log
+.DS_Store
