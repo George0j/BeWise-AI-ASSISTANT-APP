@@ -1,19 +1,18 @@
-# React + Vite
+# BeWise - AI Study Assistant & Student Community
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+BeWise is an AI-powered academic notes generator and real-time student collaboration platform.
 
-Currently, two official plugins are available:
+## Features
+- **Study Module:** Upload course outlines (`.pdf`, `.docx`, `.txt`) and generate structured lecture notes using Google Gemini AI (`gemini-3.8-flash`).
+- **Community Chat:** Real-time single-feed student chat built with **Socket.io** and persisted via **MongoDB**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
+- **Frontend:** React, Vite, Lucide Icons, Socket.io-client
+- **Backend:** Node.js, Express, Socket.io, Mongoose, Google Gen AI SDK
 
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Environment Variables
+Create a `.env` file in the backend directory:
+```env
+PORT=5000
+GEMINI_API_KEY=your_gemini_api_key_here
+MONGO_URI=your_mongodb_connection_string
