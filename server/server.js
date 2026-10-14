@@ -11,13 +11,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 app.get("/", (req, res) => {
   res.send("Bewise AI Serverless Backend is live!");
 });
-
 
 app.post("/api/generate-notes", async (req, res) => {
   try {
@@ -82,6 +80,5 @@ You are an elite university professor and academic content architect. A student 
     res.status(500).json({ error: "Failed to generate content" });
   }
 });
-
 
 export default app;
