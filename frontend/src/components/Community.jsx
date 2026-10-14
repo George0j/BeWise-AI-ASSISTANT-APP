@@ -3,10 +3,10 @@ import { Send } from "lucide-react";
 import io from "socket.io-client";
 import "./Community.css";
 
-const socket = io("http://localhost:5000");
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const socket = io(API_URL);
 
 export default function Community() {
- 
   const [messages, setMessages] = useState(() => {
     const savedChats = localStorage.getItem("bewise_community_live_chats");
     if (savedChats) {
@@ -22,7 +22,6 @@ export default function Community() {
   const [inputText, setInputText] = useState("");
 
   useEffect(() => {
-    
     socket.on("receive-message", (newMessage) => {
       setMessages((prev) => {
         const updated = [...prev, newMessage];
