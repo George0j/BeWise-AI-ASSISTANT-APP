@@ -14,6 +14,9 @@ import "./study.css";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
+// Dynamic backend API base URL for Vercel/Local deployment
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function Study() {
   const [outlineText, setOutlineText] = useState("");
   const [fileName, setFileName] = useState("");
@@ -86,7 +89,7 @@ export default function Study() {
     }, 1500);
 
     try {
-      const response = await fetch("http://localhost:5000/api/generate-notes", {
+      const response = await fetch(`${API_BASE_URL}/api/generate-notes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +114,7 @@ export default function Study() {
       console.error(err);
       setErrorMsg(
         err.message ||
-          "Could not connect to backend server. Make sure server.js is running.",
+          "Could not connect to backend server. Make sure your server is running.",
       );
     } finally {
       clearInterval(interval);
@@ -124,8 +127,8 @@ export default function Study() {
 
     const doc = new jsPDF();
     let yPosition = 20;
-    const pageWidth = 190; // Printable area width for A4 (210mm - margins)
-    const pageHeight = 280; // Max Y position before creating a new page
+    const pageWidth = 190;
+    const pageHeight = 280;
 
     // Title
     doc.setFont("helvetica", "bold");
@@ -142,23 +145,20 @@ export default function Study() {
     doc.text(`AI Readiness Score: ${notes.readinessScore}`, 15, yPosition);
     yPosition += 12;
 
-    doc.setTextColor(0); // Reset to black
+    doc.setTextColor(0);
 
     // Loop through modules
     notes.modules?.forEach((m, index) => {
-      // Check for page overflow
       if (yPosition > pageHeight - 40) {
         doc.addPage();
         yPosition = 20;
       }
 
-      // Module Heading
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
       doc.text(`Module ${index + 1}: ${m.name} (${m.weight})`, 15, yPosition);
       yPosition += 6;
 
-      // Module Overview
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       const splitOverview = doc.splitTextToSize(
@@ -168,13 +168,11 @@ export default function Study() {
       doc.text(splitOverview, 15, yPosition);
       yPosition += splitOverview.length * 5 + 4;
 
-      // Key Insights Heading
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
       doc.text("Key Exam Insights:", 15, yPosition);
       yPosition += 5;
 
-      // Key Points Bullet List
       doc.setFont("helvetica", "normal");
       m.keyPoints?.forEach((pt) => {
         if (yPosition > pageHeight - 20) {
@@ -187,10 +185,9 @@ export default function Study() {
         yPosition += splitBullet.length * 5 + 2;
       });
 
-      yPosition += 8; // Spacing between modules
+      yPosition += 8;
     });
 
-    // Save generated PDF
     const fileNameSafe = (notes.title || "study_notes")
       .toLowerCase()
       .replace(/\s+/g, "_");

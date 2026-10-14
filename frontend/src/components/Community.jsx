@@ -6,7 +6,7 @@ import "./Community.css";
 const socket = io("http://localhost:5000");
 
 export default function Community() {
-  // Initialize messages from localStorage if available
+ 
   const [messages, setMessages] = useState(() => {
     const savedChats = localStorage.getItem("bewise_community_live_chats");
     if (savedChats) {
@@ -22,7 +22,7 @@ export default function Community() {
   const [inputText, setInputText] = useState("");
 
   useEffect(() => {
-    // Listen for incoming live messages from socket server
+    
     socket.on("receive-message", (newMessage) => {
       setMessages((prev) => {
         const updated = [...prev, newMessage];
@@ -53,7 +53,6 @@ export default function Community() {
       socketId: socket.id,
     };
 
-    // Emit to server so everyone (including you) receives it via the socket listener
     socket.emit("send-message", newMessage);
     setInputText("");
   };
