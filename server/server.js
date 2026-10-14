@@ -1,11 +1,20 @@
 import express from "express";
+import http from "http";
+import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
-
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 
 app.use(cors());
 app.use(express.json());
@@ -13,8 +22,22 @@ app.use(express.urlencoded({ extended: true }));
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-app.get("/", (req, res) => {
-  res.send("Bewise AI Serverless Backend is live!");
+let chatHistory = [];
+
+io.on("connection", (socket) => {
+  console.log("Student connected:", socket.id);
+
+  // Send past messages to the connected student
+  socket.emit("chat-history", chatHistory);
+
+  socket.on("send-message", (data) => {
+    chatHistory.push(data);
+    io.emit("receive-message", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Student disconnected:", socket.id);
+  });
 });
 
 app.post("/api/generate-notes", async (req, res) => {
