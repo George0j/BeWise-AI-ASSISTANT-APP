@@ -3,8 +3,8 @@ import { Send } from "lucide-react";
 import io from "socket.io-client";
 import "./Community.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const socket = io(API_URL);
+//onst API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const socket = io("https://bewise-backend.onrender.com");
 
 export default function Community() {
   const [messages, setMessages] = useState(() => {

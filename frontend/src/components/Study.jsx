@@ -14,8 +14,8 @@ import "./study.css";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
-// Dynamic backend API base URL for Vercel/Local deployment
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE_URL =
+  "https://bewise-backend.onrender.com" || "http://localhost:5000";
 
 export default function Study() {
   const [outlineText, setOutlineText] = useState("");
@@ -130,13 +130,11 @@ export default function Study() {
     const pageWidth = 190;
     const pageHeight = 280;
 
-    // Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
     doc.text(notes.title || "Study Notes", 15, yPosition);
     yPosition += 8;
 
-    // Subtitle & Readiness
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(100);
@@ -147,7 +145,6 @@ export default function Study() {
 
     doc.setTextColor(0);
 
-    // Loop through modules
     notes.modules?.forEach((m, index) => {
       if (yPosition > pageHeight - 40) {
         doc.addPage();
