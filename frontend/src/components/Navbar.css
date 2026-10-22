@@ -197,12 +197,7 @@
 /* Mobile & Tablet Specific Optimizations */
 @media (max-width: 768px) {
   .navbar-header {
-    height: 3.5rem;
-  }
-
-  .navbar-content {
-    height: 3.5rem;
-    padding: 0 0.75rem;
+    position: relative;
   }
 
   .navbar-status-pill,
@@ -211,41 +206,33 @@
   }
 
   .navbar-brand-text {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
   }
 
-  .navbar-logo-icon {
-    height: 2rem;
-    width: 2rem;
-  }
-
-  /* Fixed Mobile Bottom Navigation Bar */
+  /* Suspended Sub-Bar directly below main header */
   .navbar-center-nav {
-    position: fixed;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    width: calc(100% - 2rem);
-    max-width: 400px;
+    position: static;
+    transform: none;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 0.5rem 1rem 0.75rem 1rem;
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+    box-sizing: border-box;
   }
 
   .navbar-nav-list {
     width: 100%;
-    justify-content: space-around;
-    background-color: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(51, 65, 85, 0.8);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    padding: 0.35rem;
-    border-radius: 9999px;
+    max-width: 380px;
+    justify-content: space-between;
   }
 
   .navbar-nav-btn {
     flex: 1;
     justify-content: center;
-    padding: 0.5rem 0.75rem;
+    padding: 0.4rem 0.75rem;
     font-size: 0.85rem;
-    border-radius: 9999px;
   }
 }
