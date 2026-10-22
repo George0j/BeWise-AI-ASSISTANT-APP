@@ -4,42 +4,47 @@ import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
+
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-
 const io = new Server(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"],
-  },
+    methods: ["GET", "POST"]
+  }
 });
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Google Gen AI Setup
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-let chatHistory = [];
+// In-memory array to store current chat history
+const chatHistory = [];
 
+// Socket.io Real-Time Chat Connection Handler
 io.on("connection", (socket) => {
-  console.log("Student connected:", socket.id);
+  console.log("A student connected:", socket.id);
 
-  // Send past messages to the connected student
+  // Send existing chat history to newly connected student
   socket.emit("chat-history", chatHistory);
 
-  socket.on("send-message", (data) => {
-    chatHistory.push(data);
-    io.emit("receive-message", data);
+  // Listen for incoming messages from any student
+  socket.on("send-message", (messageData) => {
+    chatHistory.push(messageData); // Store in server memory
+    io.emit("receive-message", messageData); // Broadcast to all connected clients
   });
 
   socket.on("disconnect", () => {
-    console.log("Student disconnected:", socket.id);
+    console.log("A student disconnected:", socket.id);
   });
 });
 
+// Gemini AI Notes Generator Route
 app.post("/api/generate-notes", async (req, res) => {
   try {
     const { outlineText, subject, detailLevel } = req.body || {};
@@ -98,6 +103,7 @@ You are an elite university professor and academic content architect. A student 
 
     const examNotesData = JSON.parse(response.text);
     return res.json(examNotesData);
+
   } catch (error) {
     console.error("Error generating content:", error);
     res.status(500).json({ error: "Failed to generate content" });
@@ -105,9 +111,6 @@ You are an elite university professor and academic content architect. A student 
 });
 
 const PORT = process.env.PORT || 5000;
-
-server.listen(PORT, "0.0.0.0", () => {
+server.listen(PORT, () => {
   console.log(`AI & Chat server running on port ${PORT}`);
 });
-
-export default app;
