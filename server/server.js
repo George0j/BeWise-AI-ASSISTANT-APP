@@ -104,4 +104,10 @@ You are an elite university professor and academic content architect. A student 
   }
 });
 
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`AI & Chat server running on port ${PORT}`);
+});
+
 export default app;
