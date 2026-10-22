@@ -14,8 +14,11 @@ import "./study.css";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
+// Dynamically check if running locally or use your Render backend URL
 const API_BASE_URL =
-  "https://bewise-backend.onrender.com" || "http://localhost:5000";
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000"
+    : "https://bewise-ai-assistant-app.onrender.com";
 
 export default function Study() {
   const [outlineText, setOutlineText] = useState("");

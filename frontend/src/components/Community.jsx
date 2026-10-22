@@ -3,8 +3,13 @@ import { Send } from "lucide-react";
 import io from "socket.io-client";
 import "./Community.css";
 
-//onst API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const socket = io("https://bewise-backend.onrender.com");
+// Dynamically target local or production server
+const SOCKET_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000"
+    : "https://bewise-ai-assistant-app.onrender.com";
+
+const socket = io(SOCKET_URL);
 
 export default function Community() {
   const [messages, setMessages] = useState(() => {
@@ -22,6 +27,18 @@ export default function Community() {
   const [inputText, setInputText] = useState("");
 
   useEffect(() => {
+    // Load initial chat history from the server when connected
+    socket.on("chat-history", (history) => {
+      if (history && history.length > 0) {
+        setMessages(history);
+        localStorage.setItem(
+          "bewise_community_live_chats",
+          JSON.stringify(history),
+        );
+      }
+    });
+
+    // Listen for live broadcasted messages
     socket.on("receive-message", (newMessage) => {
       setMessages((prev) => {
         const updated = [...prev, newMessage];
@@ -34,6 +51,7 @@ export default function Community() {
     });
 
     return () => {
+      socket.off("chat-history");
       socket.off("receive-message");
     };
   }, []);
@@ -86,7 +104,7 @@ export default function Community() {
               const isOutgoing = msg.socketId === socket.id;
               return (
                 <div
-                  key={msg.id}
+                  key={msg.id || Math.random()}
                   className={`chat-message-row ${isOutgoing ? "outgoing" : "incoming"}`}
                 >
                   <div className="chat-message-bubble">{msg.text}</div>
